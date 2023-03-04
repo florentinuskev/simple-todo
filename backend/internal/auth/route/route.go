@@ -16,7 +16,7 @@ func InitAuthRoute(e *echo.Echo, ctrl auth.AuthController) {
 	g := e.Group("/auth")
 
 	g.POST("/register", ctrl.UserRegister)
-	g.GET("/login", ctrl.UserLogin)
-	g.GET("/get-profile", ctrl.GetUser)
+	g.POST("/login", ctrl.UserLogin)
+	g.GET("/get-profile", ctrl.GetProfile)
 	g.GET("/refresh-token", ctrl.RefreshToken)
 }
