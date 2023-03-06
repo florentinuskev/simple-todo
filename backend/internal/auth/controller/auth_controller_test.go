@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	mock_auth "github.com/florentinuskev/simple-todo/internal/auth/mock"
 	"github.com/florentinuskev/simple-todo/internal/dao"
@@ -105,9 +106,50 @@ func TestUserLogin(t *testing.T) {
 }
 
 func TestGetProfile(t *testing.T) {
+	t.Parallel()
 
-}
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-func TestRefreshToken(t *testing.T) {
+	mockAuthSvc := mock_auth.NewMockAuthService(ctrl)
+	authController := NewAuthController(&utils.Config{}, mockAuthSvc)
 
+	user := &dao.User{
+		ID:       uuid.NewString(),
+		Username: "test123",
+		CreatedAt: sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		},
+		UpdatedAt: sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		},
+	}
+
+	userReq := &dto.GetProfileReq{UID: user.ID}
+
+	buf, err := utils.AnyToBytesBuffer(userReq)
+
+	require.NoError(t, err)
+	require.NotNil(t, buf)
+	require.Nil(t, err)
+
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/auth/get-profile", buf)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+
+	c := e.NewContext(req, rec)
+
+	c.Set("uid", userReq.UID)
+
+	mockAuthSvc.EXPECT().GetProfile(gomock.Any(), gomock.Eq(userReq)).Return(&dto.GetProfileRes{
+		Status: 200,
+		User:   user,
+	}, nil)
+
+	errRes := authController.GetProfile(c)
+
+	require.NoError(t, errRes)
 }

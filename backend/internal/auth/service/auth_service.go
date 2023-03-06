@@ -81,3 +81,21 @@ func (as *AuthService) UserLogin(c context.Context, userReq *dto.UserLoginReq) (
 		Token:  tokenString,
 	}, nil
 }
+func (as *AuthService) GetProfile(c context.Context, userReq *dto.GetProfileReq) (*dto.GetProfileRes, error) {
+
+	user, err := as.r.FindUserById(c, userReq.UID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.GetProfileRes{
+		Status: 200,
+		User: &dao.User{
+			ID:        user.ID,
+			Username:  user.Username,
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt,
+		},
+	}, nil
+}

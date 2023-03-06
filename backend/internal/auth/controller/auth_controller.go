@@ -19,7 +19,21 @@ func NewAuthController(cfg *utils.Config, as auth.AuthService) auth.AuthControll
 }
 
 func (ac *AuthController) GetProfile(c echo.Context) error {
-	return nil
+	uid := c.Get("uid")
+
+	sUID := uid.(string)
+
+	if uid == "" {
+		return c.JSON(http.StatusBadRequest, "User ID not provided.")
+	}
+
+	res, err := ac.as.GetProfile(c.Request().Context(), &dto.GetProfileReq{UID: sUID})
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, res)
 }
 
 func (ac *AuthController) UserRegister(c echo.Context) error {

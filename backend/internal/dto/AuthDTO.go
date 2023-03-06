@@ -21,3 +21,12 @@ type UserLoginRes struct {
 	Status uint32 `json:"status"`
 	Token  string `json:"token"`
 }
+
+type GetProfileReq struct {
+	UID string `json:"uid"`
+}
+
+type GetProfileRes struct {
+	Status uint32    `json:"status"`
+	User   *dao.User `json:"user"`
+}

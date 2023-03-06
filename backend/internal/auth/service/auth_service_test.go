@@ -13,6 +13,7 @@ import (
 	"github.com/florentinuskev/simple-todo/internal/dto"
 	"github.com/florentinuskev/simple-todo/public/utils"
 	"github.com/golang/mock/gomock"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -83,6 +84,39 @@ func TestUserLoginService(t *testing.T) {
 	require.NotNil(t, userRes)
 	require.NotEmpty(t, userRes.Token)
 	require.Nil(t, err)
+}
+
+func TestGetProfile(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
+	mockAuthRepo := mock_auth.NewMockAuthRepository(ctrl)
+	authSvc := NewAuthService(&utils.Config{}, mockAuthRepo)
+
+	ctx := context.Background()
+
+	userMock := &dao.User{
+		ID:       uuid.NewString(),
+		Username: "test123",
+		Password: "test123",
+		CreatedAt: sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		},
+		UpdatedAt: sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		},
+	}
+
+	mockAuthRepo.EXPECT().FindUserById(ctx, gomock.Eq(userMock.ID)).Return(userMock, nil)
+
+	res, err := authSvc.GetProfile(ctx, &dto.GetProfileReq{UID: userMock.ID})
+
+	require.NoError(t, err)
+
+	require.NotNil(t, res)
+	require.Equal(t, userMock.ID, res.User.ID)
+	require.Equal(t, uint32(200), res.Status)
 }
 
 func TestUserLoginInvalidPass(t *testing.T) {
