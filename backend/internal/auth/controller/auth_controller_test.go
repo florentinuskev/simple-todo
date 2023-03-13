@@ -136,7 +136,7 @@ func TestGetProfile(t *testing.T) {
 	require.Nil(t, err)
 
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/api/v1/auth/get-profile", buf)
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/auth/profile/", buf)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 
