@@ -1,8 +1,6 @@
 package server
 
 import (
-	"net/http"
-
 	"github.com/florentinuskev/simple-todo/public/utils"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
@@ -23,8 +21,6 @@ func NewServer(cfg *utils.Config) *Server {
 
 func (s *Server) RunServer() {
 
-	s.e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
+	s.InitHandler()
 	s.e.Logger.Fatal(s.e.Start(":" + s.cfg.Env["PORT"]))
 }
