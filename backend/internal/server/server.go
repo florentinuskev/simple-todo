@@ -4,12 +4,14 @@ import (
 	"net/http"
 
 	"github.com/florentinuskev/simple-todo/public/utils"
+	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 )
 
 type Server struct {
 	cfg *utils.Config
 	e   *echo.Echo
+	db  *sqlx.DB
 }
 
 func NewServer(cfg *utils.Config) *Server {

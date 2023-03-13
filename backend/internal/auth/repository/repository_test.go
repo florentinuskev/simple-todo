@@ -33,7 +33,7 @@ func TestCreateUser(t *testing.T) {
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
 	defer sqlxDB.Close()
 
-	repo := NewAuthRepo(&cfg, sqlxDB)
+	repo := NewAuthRepository(&cfg, sqlxDB)
 
 	rows := sqlmock.NewRows([]string{"id", "username", "password", "created_at", "updated_at"}).AddRow(u.ID, u.Username, u.Password, time.Now(), time.Now())
 
@@ -56,7 +56,7 @@ func TestFindUserById(t *testing.T) {
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
 	defer sqlxDB.Close()
 
-	repo := NewAuthRepo(&cfg, sqlxDB)
+	repo := NewAuthRepository(&cfg, sqlxDB)
 
 	rows := sqlmock.NewRows([]string{"id", "username", "password", "created_at", "updated_at"}).AddRow(u.ID, u.Username, u.Password, time.Now(), time.Now())
 
@@ -78,7 +78,7 @@ func TestFindUserByUsername(t *testing.T) {
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
 	defer sqlxDB.Close()
 
-	repo := NewAuthRepo(&cfg, sqlxDB)
+	repo := NewAuthRepository(&cfg, sqlxDB)
 
 	rows := sqlmock.NewRows([]string{"id", "username", "password", "created_at", "updated_at"}).AddRow(u.ID, u.Username, u.Password, time.Now(), time.Now())
 

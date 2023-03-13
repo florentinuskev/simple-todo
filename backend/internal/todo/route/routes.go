@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func NewTodoRoute(e *echo.Echo, cfg *utils.Config, mw middlewares.MiddlewareManager, ctrl todo.TodoController) {
+func InitTodoRoute(e *echo.Echo, cfg *utils.Config, mw *middlewares.MiddlewareManager, ctrl todo.TodoController) {
 	g := e.Group("/todos")
 
 	g.Use(mw.IsAuthenticated)
