@@ -44,6 +44,10 @@ func (ac *AuthController) UserRegister(c echo.Context) error {
 	res, err := ac.as.UserRegister(c.Request().Context(), userReq)
 
 	if err != nil {
+		if err == errors.New("username exits") {
+			return c.JSON(http.StatusBadRequest, "Username is exists, please use another username.")
+		}
+
 		return err
 	}
 
