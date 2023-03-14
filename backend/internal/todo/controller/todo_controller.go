@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/florentinuskev/simple-todo/internal/dto"
@@ -92,7 +91,6 @@ func (tc *TodoController) DeleteTodo(c echo.Context) error {
 	userRes, err := tc.ts.DeleteTodo(c.Request().Context(), userReq)
 
 	if err != nil {
-		log.Println("ERRNO", err.Error())
 		return err
 	}
 
