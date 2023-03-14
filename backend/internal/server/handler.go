@@ -4,6 +4,7 @@ import (
 	authRepository "github.com/florentinuskev/simple-todo/internal/auth/repository"
 	"github.com/florentinuskev/simple-todo/internal/middlewares"
 	todoRepository "github.com/florentinuskev/simple-todo/internal/todo/repository"
+	"github.com/go-playground/validator/v10"
 
 	authService "github.com/florentinuskev/simple-todo/internal/auth/service"
 	todoService "github.com/florentinuskev/simple-todo/internal/todo/service"
@@ -14,6 +15,14 @@ import (
 	authRoute "github.com/florentinuskev/simple-todo/internal/auth/route"
 	todoRoute "github.com/florentinuskev/simple-todo/internal/todo/route"
 )
+
+type CustomValidator struct {
+	validator *validator.Validate
+}
+
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
+}
 
 func (s *Server) InitHandler() {
 	// Initialize all repositories
@@ -31,8 +40,13 @@ func (s *Server) InitHandler() {
 	// Initialize Middleware
 	mw := middlewares.NewMiddlewareManager(s.cfg, authRepo)
 
+	// Validator
+	s.e.Validator = &CustomValidator{validator: validator.New()}
+
 	// Initialize all routes
-	authRoute.InitAuthRoute(s.e, s.cfg, mw, authCtrl)
-	todoRoute.InitTodoRoute(s.e, s.cfg, mw, todoCtrl)
+	g := s.e.Group("/api/v1")
+
+	authRoute.InitAuthRoute(g, s.cfg, mw, authCtrl)
+	todoRoute.InitTodoRoute(g, s.cfg, mw, todoCtrl)
 
 }

@@ -2,13 +2,13 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	"github.com/florentinuskev/simple-todo/internal/auth"
 	"github.com/florentinuskev/simple-todo/internal/dao"
 	"github.com/florentinuskev/simple-todo/internal/dto"
 	"github.com/florentinuskev/simple-todo/public/utils"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -24,14 +24,14 @@ func NewAuthService(cfg *utils.Config, r auth.AuthRepository) auth.AuthService {
 func (as *AuthService) UserRegister(c context.Context, userReq *dto.UserRegisterReq) (*dto.UserRegisterRes, error) {
 	existUser, err := as.r.FindUserByUsername(c, userReq.Username)
 
-	if err != nil {
-		return nil, err
-	}
-
 	if existUser != nil {
 		return &dto.UserRegisterRes{
 			Status: 400,
 		}, errors.New("username exists")
+	}
+
+	if err != sql.ErrNoRows && err != nil {
+		return nil, err
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), 10)
@@ -39,8 +39,7 @@ func (as *AuthService) UserRegister(c context.Context, userReq *dto.UserRegister
 	if err != nil {
 		return nil, err
 	}
-
-	createdUser, err := as.r.CreateUser(c, &dao.User{ID: uuid.NewString(), Username: userReq.Username, Password: string(hashedPassword)})
+	createdUser, err := as.r.CreateUser(c, &dao.User{Username: userReq.Username, Password: string(hashedPassword)})
 
 	if err != nil {
 		return nil, err
@@ -55,7 +54,11 @@ func (as *AuthService) UserRegister(c context.Context, userReq *dto.UserRegister
 func (as *AuthService) UserLogin(c context.Context, userReq *dto.UserLoginReq) (*dto.UserLoginRes, error) {
 	user, err := as.r.FindUserByUsername(c, userReq.Username)
 
-	if err != nil {
+	if user == nil {
+		return nil, errors.New("Username does not exists")
+	}
+
+	if err != sql.ErrNoRows && err != nil {
 		return nil, err
 	}
 

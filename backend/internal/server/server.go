@@ -12,10 +12,11 @@ type Server struct {
 	db  *sqlx.DB
 }
 
-func NewServer(cfg *utils.Config) *Server {
+func NewServer(cfg *utils.Config, db *sqlx.DB) *Server {
 	return &Server{
 		cfg: cfg,
 		e:   echo.New(),
+		db:  db,
 	}
 }
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/florentinuskev/simple-todo/internal/server"
+	"github.com/florentinuskev/simple-todo/public/db"
 	"github.com/florentinuskev/simple-todo/public/utils"
 )
 
@@ -11,7 +12,10 @@ func main() {
 	c := &utils.Config{}
 	c.LoadEnv()
 
-	s := server.NewServer(c)
+	// DB Connection
+	db := db.ConnectDB(c)
+
+	s := server.NewServer(c, db)
 	s.RunServer()
 
 }

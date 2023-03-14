@@ -9,7 +9,11 @@ import (
 
 func (mw *MiddlewareManager) IsAuthenticated(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		tokenString := c.Request().Header.Get("Authentication")
+		tokenString := c.Request().Header.Get("Authorization")
+
+		if tokenString == "" {
+			return c.JSON(http.StatusUnauthorized, "Please provide token.")
+		}
 
 		valid, user, err := utils.VerifyJWT(tokenString, mw.cfg.Env["JWT_SECRET"])
 

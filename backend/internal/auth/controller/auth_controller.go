@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"errors"
+	"log"
 	"net/http"
 
 	"github.com/florentinuskev/simple-todo/internal/auth"
@@ -20,6 +22,7 @@ func NewAuthController(cfg *utils.Config, as auth.AuthService) auth.AuthControll
 
 func (ac *AuthController) GetProfile(c echo.Context) error {
 	uid := c.Get("uid")
+	log.Println("UID", uid)
 
 	sUID := uid.(string)
 
@@ -56,6 +59,10 @@ func (ac *AuthController) UserLogin(c echo.Context) error {
 	res, err := ac.as.UserLogin(c.Request().Context(), userReq)
 
 	if err != nil {
+		if err == errors.New("Username does not exists") {
+			return c.JSON(http.StatusNotFound, "Username does not exists.")
+		}
+
 		return err
 	}
 

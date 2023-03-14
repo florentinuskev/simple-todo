@@ -2,29 +2,28 @@ package db
 
 import (
 	"context"
+	"log"
 
-	"github.com/blastertwist/antex-dash/config"
-	"github.com/blastertwist/antex-dash/pkg/logger"
+	"github.com/florentinuskev/simple-todo/public/utils"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"go.uber.org/zap"
 )
 
-func ConnectDB(cfg *config.Config, logger logger.Logger) *sqlx.DB {
+func ConnectDB(cfg *utils.Config) *sqlx.DB {
 
 	ctx := context.Background()
 
-	dbSource := "postgresql://" + cfg.DB.User + ":" + cfg.DB.Pass + "@" + cfg.DB.URL + ":" + cfg.DB.Port + "/" + cfg.DB.Name + "?sslmode=disable"
+	dbSource := "postgresql://" + cfg.Env["DB_USER"] + ":" + cfg.Env["DB_PASS"] + "@" + cfg.Env["DB_URL"] + ":" + cfg.Env["DB_PORT"] + "/" + cfg.Env["DB_NAME"] + "?sslmode=disable"
 	db, err := sqlx.ConnectContext(ctx, "postgres", dbSource)
 
 	if err != nil {
-		logger.Panic("[DB]Failed to connect to database.", zap.String("Error:", err.Error()))
+		log.Panic("[DB]Failed to connect to database.", err.Error())
 	}
 
 	err = db.PingContext(ctx)
 
 	if err != nil {
-		logger.Panic("[DB]Failed to connect to database.", zap.String("Error:", err.Error()))
+		log.Panic("[DB]Failed to connect to database.", err.Error())
 	}
 
 	return db

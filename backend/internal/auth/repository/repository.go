@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"log"
 
 	"github.com/florentinuskev/simple-todo/internal/auth"
 	"github.com/florentinuskev/simple-todo/internal/dao"
@@ -21,7 +22,7 @@ func NewAuthRepository(cfg *utils.Config, db *sqlx.DB) auth.AuthRepository {
 func (ar *AuthRepo) CreateUser(c context.Context, user *dao.User) (*dao.User, error) {
 	u := &dao.User{}
 
-	if err := ar.db.QueryRowxContext(c, CreateUserQuery, user.ID, user.Username, user.Password).StructScan(u); err != nil {
+	if err := ar.db.QueryRowxContext(c, CreateUserQuery, user.Username, user.Password).StructScan(u); err != nil {
 		return nil, err
 	}
 
@@ -42,6 +43,7 @@ func (ar *AuthRepo) FindUserByUsername(c context.Context, username string) (*dao
 	u := &dao.User{}
 
 	if err := ar.db.QueryRowxContext(c, FindUserByUsernameQuery, username).StructScan(u); err != nil {
+		log.Println("NEW ERRRO:", err.Error())
 		return nil, err
 	}
 

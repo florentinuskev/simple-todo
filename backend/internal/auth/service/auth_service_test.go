@@ -157,6 +157,43 @@ func TestUserLoginInvalidPass(t *testing.T) {
 	require.NotNil(t, userRes)
 }
 
+func TestUserLoginNoUserService(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
+	mockAuthRepo := mock_auth.NewMockAuthRepository(ctrl)
+	authSvc := NewAuthService(&utils.Config{}, mockAuthRepo)
+
+	ctx := context.Background()
+
+	user := &dao.User{
+		Username: "test123",
+		Password: "test123",
+	}
+
+	// hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	// require.NoError(t, err)
+
+	// mockUser := &dao.User{
+	// 	Username: "test123",
+	// 	Password: string(hashedPassword),
+	// 	CreatedAt: sql.NullTime{
+	// 		Time:  time.Now(),
+	// 		Valid: true,
+	// 	},
+	// 	UpdatedAt: sql.NullTime{
+	// 		Time:  time.Now(),
+	// 		Valid: true,
+	// 	},
+	// }
+
+	mockAuthRepo.EXPECT().FindUserByUsername(ctx, gomock.Eq(user.Username)).Return(nil, sql.ErrNoRows)
+
+	userRes, err := authSvc.UserLogin(ctx, &dto.UserLoginReq{Username: user.Username, Password: user.Password})
+
+	require.Error(t, err)
+	require.Nil(t, userRes)
+}
+
 func TestUserRegisterService(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
@@ -170,7 +207,7 @@ func TestUserRegisterService(t *testing.T) {
 		Password: "test123",
 	}
 
-	mockAuthRepo.EXPECT().FindUserByUsername(ctx, gomock.Eq(user.Username)).Return(nil, nil)
+	mockAuthRepo.EXPECT().FindUserByUsername(ctx, gomock.Eq(user.Username)).Return(nil, sql.ErrNoRows)
 	mockAuthRepo.EXPECT().CreateUser(ctx, EqCreateUserParams(user, user.Password)).Return(user, nil)
 
 	userRes, err := authSvc.UserRegister(ctx, &dto.UserRegisterReq{
