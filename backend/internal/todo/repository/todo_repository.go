@@ -64,7 +64,7 @@ func (tr *TodoRepository) NewTodo(c context.Context, todo *dao.Todo) (*dao.Todo,
 func (tr *TodoRepository) EditTodo(c context.Context, todo *dao.Todo) (*dao.Todo, error) {
 	t := &dao.Todo{}
 
-	if err := tr.db.QueryRowxContext(c, UpdateTodoQuery, todo.Todo, todo.ID).StructScan(t); err != nil {
+	if err := tr.db.QueryRowxContext(c, UpdateTodoQuery, todo.Todo, todo.IsDone, todo.ID).StructScan(t); err != nil {
 		return nil, err
 	}
 

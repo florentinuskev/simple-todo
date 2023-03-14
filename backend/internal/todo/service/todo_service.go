@@ -60,7 +60,7 @@ func (ts *TodoService) NewTodo(c context.Context, userReq *dto.NewTodoReq) (*dto
 	}, nil
 }
 func (ts *TodoService) EditTodo(c context.Context, userReq *dto.EditTodoReq) (*dto.EditTodoRes, error) {
-	editedTodo, err := ts.r.EditTodo(c, &dao.Todo{ID: userReq.ID, Todo: userReq.Todo})
+	editedTodo, err := ts.r.EditTodo(c, &dao.Todo{ID: userReq.ID, Todo: userReq.Todo, IsDone: userReq.IsDone})
 
 	if err != nil {
 		return nil, err

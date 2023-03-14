@@ -31,8 +31,9 @@ type NewTodoRes struct {
 }
 
 type EditTodoReq struct {
-	ID   string `json:"id"`
-	Todo string `json:"todo"`
+	ID     string `json:"id"`
+	Todo   string `json:"todo"`
+	IsDone bool   `json:"is_done"`
 }
 
 type EditTodoRes struct {
