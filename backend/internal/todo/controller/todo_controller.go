@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/florentinuskev/simple-todo/internal/dto"
@@ -78,7 +77,6 @@ func (tc *TodoController) EditTodo(c echo.Context) error {
 	userRes, err := tc.ts.EditTodo(c.Request().Context(), userReq)
 
 	if err != nil {
-		log.Println("AM I HERE?", err.Error())
 		return err
 	}
 
