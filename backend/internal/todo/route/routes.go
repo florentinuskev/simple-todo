@@ -12,8 +12,8 @@ func InitTodoRoute(e *echo.Group, cfg *utils.Config, mw *middlewares.MiddlewareM
 
 	g.Use(mw.IsAuthenticated)
 
-	g.GET("/:uid", ctrl.GetTodos)
-	g.GET("/get-todo/:id", ctrl.GetTodo)
+	g.GET("/", ctrl.GetTodos)
+	g.GET("/:id", ctrl.GetTodo)
 	g.POST("/", ctrl.NewTodo)
 	g.PATCH("/:id", ctrl.EditTodo)
 	g.DELETE("/:id", ctrl.DeleteTodo)

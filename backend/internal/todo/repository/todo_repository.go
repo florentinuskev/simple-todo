@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"errors"
-	"log"
 
 	"github.com/florentinuskev/simple-todo/internal/dao"
 	"github.com/florentinuskev/simple-todo/internal/todo"
@@ -43,7 +42,6 @@ func (tr *TodoRepository) GetTodos(c context.Context, uid string) ([]*dao.Todo, 
 }
 
 func (tr *TodoRepository) GetTodo(c context.Context, id string) (*dao.Todo, error) {
-	log.Print(id)
 	t := &dao.Todo{}
 
 	if err := tr.db.QueryRowxContext(c, GetTodoQuery, id).StructScan(t); err != nil {
@@ -56,7 +54,7 @@ func (tr *TodoRepository) GetTodo(c context.Context, id string) (*dao.Todo, erro
 func (tr *TodoRepository) NewTodo(c context.Context, todo *dao.Todo) (*dao.Todo, error) {
 	t := &dao.Todo{}
 
-	if err := tr.db.QueryRowxContext(c, NewTodoQuery, todo.ID, todo.UID, todo.Todo).StructScan(t); err != nil {
+	if err := tr.db.QueryRowxContext(c, NewTodoQuery, todo.UID, todo.Todo).StructScan(t); err != nil {
 		return nil, err
 	}
 

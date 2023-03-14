@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"log"
 
 	"github.com/florentinuskev/simple-todo/internal/auth"
 	"github.com/florentinuskev/simple-todo/internal/dao"
@@ -43,7 +42,7 @@ func (ar *AuthRepo) FindUserByUsername(c context.Context, username string) (*dao
 	u := &dao.User{}
 
 	if err := ar.db.QueryRowxContext(c, FindUserByUsernameQuery, username).StructScan(u); err != nil {
-		log.Println("NEW ERRRO:", err.Error())
+
 		return nil, err
 	}
 

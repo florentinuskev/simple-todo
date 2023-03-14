@@ -2,7 +2,6 @@ package controller
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/florentinuskev/simple-todo/internal/auth"
@@ -22,7 +21,6 @@ func NewAuthController(cfg *utils.Config, as auth.AuthService) auth.AuthControll
 
 func (ac *AuthController) GetProfile(c echo.Context) error {
 	uid := c.Get("uid")
-	log.Println("UID", uid)
 
 	sUID := uid.(string)
 

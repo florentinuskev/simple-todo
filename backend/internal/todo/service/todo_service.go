@@ -7,7 +7,6 @@ import (
 	"github.com/florentinuskev/simple-todo/internal/dto"
 	"github.com/florentinuskev/simple-todo/internal/todo"
 	"github.com/florentinuskev/simple-todo/public/utils"
-	"github.com/google/uuid"
 )
 
 type TodoService struct {
@@ -45,7 +44,6 @@ func (ts *TodoService) GetTodo(c context.Context, userReq *dto.GetTodoReq) (*dto
 }
 func (ts *TodoService) NewTodo(c context.Context, userReq *dto.NewTodoReq) (*dto.NewTodoRes, error) {
 	todo := &dao.Todo{
-		ID:   uuid.NewString(),
 		UID:  userReq.UID,
 		Todo: userReq.Todo,
 	}
