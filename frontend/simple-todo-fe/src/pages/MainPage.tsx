@@ -100,6 +100,25 @@ const MainPage = () => {
         }
     }
 
+    const updateTodoDone = async (done: any) => {
+        try {
+            console.log("HELLO DONE", done);
+            const res = await axios.patch("http://127.0.0.1:3000/api/v1/todos/" + done.id, {
+                is_done: done.isDone
+            }, {
+                headers: {
+                    Authorization: localStorage.getItem("token")
+                },
+            })
+
+            if (res.status == 200) {
+                fetchTodos();
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     const deleteTodo = async (e: any) => {
         e.preventDefault();
         try {
@@ -130,7 +149,13 @@ const MainPage = () => {
     return (
         <div>
             <Navbar profile={profile} />
-            <TodoList todos={todos} setSelTodo={(todo: any) => setSelTodo(todo)} openEdit={() => setEditModalOpen(true)} openDelete={() => setDelModalOpen(true)} />
+            <TodoList todos={todos}
+                setSelTodo={(todo: any) => setSelTodo(todo)}
+                openEdit={() => setEditModalOpen(true)}
+                openDelete={() => setDelModalOpen(true)}
+                updateDone={(done: any) => { updateTodoDone(done) }}
+            />
+
             <Fab onClick={() => setNewModalOpen(true)} />
             <Modal title={"Create New Todo"} desc={"Enter the activity you want to add to database."} isOpen={newModalOpen} setIsOpen={(open: any) => setNewModalOpen(open)}>
                 <h1>Activity:</h1>
