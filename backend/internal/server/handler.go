@@ -5,6 +5,7 @@ import (
 	"github.com/florentinuskev/simple-todo/internal/middlewares"
 	todoRepository "github.com/florentinuskev/simple-todo/internal/todo/repository"
 	"github.com/go-playground/validator/v10"
+	"github.com/labstack/echo/v4/middleware"
 
 	authService "github.com/florentinuskev/simple-todo/internal/auth/service"
 	todoService "github.com/florentinuskev/simple-todo/internal/todo/service"
@@ -42,6 +43,7 @@ func (s *Server) InitHandler() {
 
 	// Validator
 	s.e.Validator = &CustomValidator{validator: validator.New()}
+	s.e.Use(middleware.CORS())
 
 	// Initialize all routes
 	g := s.e.Group("/api/v1")
